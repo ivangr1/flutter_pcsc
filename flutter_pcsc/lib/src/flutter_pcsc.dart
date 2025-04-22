@@ -10,6 +10,12 @@ import 'package:flutter_pcsc_windows/flutter_pcsc_windows.dart';
 
 /// The main class to use to deal with PCSC.
 class Pcsc {
+  static int SCARD_CTL_CODE(int code) {
+    // Base value 0x42000000 represents smart card reader device type
+    const int SCARD_CTL_BASE = 0x42000000;
+    return SCARD_CTL_BASE + code;
+  }
+
   /// Establishes a PCSC context.
   static Future<int> establishContext(PcscSCope scope) {
     return _platform.establishContext(scopeToInt(scope));
