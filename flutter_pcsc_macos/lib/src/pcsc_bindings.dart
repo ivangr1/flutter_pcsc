@@ -104,6 +104,37 @@ class PCSCBinding {
     }
   }
 
+  Future<Uint8List> cardControl(
+    int hCard,
+    int controlCode,
+    List<int> sendBuffer,
+    int recvBufferLen,
+  ) async {
+    final nativeSendBuffer = _allocateNative(sendBuffer);
+    final pbRecvBuffer = calloc<ffi.Uint8>(recvBufferLen);
+    final lpBytesReturned = calloc<DWORD>();
+
+    try {
+      var res = _nlwinscard.SCardControl(
+        hCard,
+        controlCode,
+        nativeSendBuffer.cast(), // Cast to LPCVOID
+        sendBuffer.length,
+        pbRecvBuffer.cast(), // Cast to LPVOID
+        recvBufferLen,
+        lpBytesReturned,
+      );
+      _checkAndThrow(res, 'Error while sending SCardControl');
+
+      final result = _asUint8List(pbRecvBuffer, lpBytesReturned.value);
+      return result;
+    } finally {
+      calloc.free(nativeSendBuffer);
+      calloc.free(pbRecvBuffer);
+      calloc.free(lpBytesReturned);
+    }
+  }
+
   Future<Uint8List> transmit(
       int hCard, int activeProtocol, List<int> sendCommand,
       {bool newIsolate = false}) {

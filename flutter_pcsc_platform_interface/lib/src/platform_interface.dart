@@ -35,6 +35,15 @@ abstract class PcscPlatform extends PlatformInterface {
     throw UnimplementedError('listReaders() has not been implemented.');
   }
 
+  Future<List<int>> cardControl(
+    int hCard,
+    int controlCode,
+    List<int> sendBuffer, {
+    int maxResponseLength = 256,
+  }) {
+    throw UnimplementedError('cardControl() has not been implemented.');
+  }
+
   Future<Map> cardConnect(
       int context, String reader, int shareMode, int protocol) {
     throw UnimplementedError('cardConnect() has not been implemented.');

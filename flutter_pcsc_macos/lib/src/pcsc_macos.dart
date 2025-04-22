@@ -29,6 +29,22 @@ class PcscMacOS extends PcscPlatform {
     return _binding.listReaders(context);
   }
 
+  /// Sends a control command to the card or reader
+  @override
+  Future<List<int>> cardControl(
+    int hCard,
+    int controlCode,
+    List<int> sendBuffer, {
+    int maxResponseLength = 256,
+  }) async {
+    return _binding.cardControl(
+      hCard,
+      controlCode,
+      sendBuffer,
+      maxResponseLength,
+    );
+  }
+
   /// Connects to the card using the specified reader.
   @override
   Future<Map> cardConnect(
