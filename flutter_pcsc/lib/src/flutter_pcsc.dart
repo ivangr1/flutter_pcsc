@@ -27,6 +27,21 @@ class Pcsc {
         context, reader, shareToInt(share), protocolToInt(protocol)));
   }
 
+  /// Sends a control command to the card or reader
+  static Future<List<int>> cardControl(
+    CardStruct card,
+    int controlCode,
+    List<int> sendBuffer, {
+    int maxResponseLength = 256,
+  }) {
+    return _platform.cardControl(
+      card.hCard,
+      controlCode,
+      sendBuffer,
+      maxResponseLength: maxResponseLength,
+    );
+  }
+
   /// Transmits an APDU to the card.
   static Future<List<int>> transmit(CardStruct card, List<int> commandBytes,
       {bool newIsolate = false}) {
