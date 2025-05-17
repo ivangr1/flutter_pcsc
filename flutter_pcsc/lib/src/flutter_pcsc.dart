@@ -38,13 +38,13 @@ class Pcsc {
     CardStruct card,
     int controlCode,
     List<int> sendBuffer, {
-    int maxResponseLength = 256,
+    bool newIsolate = true,
   }) {
     return _platform.cardControl(
       card.hCard,
       controlCode,
-      sendBuffer,
-      maxResponseLength: maxResponseLength,
+      sendBuffer, 
+      newIsolate: newIsolate
     );
   }
 

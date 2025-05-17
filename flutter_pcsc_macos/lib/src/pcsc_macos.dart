@@ -35,7 +35,7 @@ class PcscMacOS extends PcscPlatform {
     int hCard,
     int controlCode,
     List<int> sendBuffer, {
-    int maxResponseLength = 256,
+    bool newIsolate = false,
   }) async {
     return _binding.cardControl(
       hCard,
