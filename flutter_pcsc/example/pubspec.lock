@@ -61,10 +61,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "35d0f481d939de0d640b3db9a7aa36a52cd22054a798a73b4f50bdad5ce12678"
+      sha256: "289279317b4b16eb2bb7e271abccd4bf84ec9bdcbe999e278a94b804f5630418"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "2.1.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -88,35 +88,31 @@ packages:
   flutter_pcsc_linux:
     dependency: transitive
     description:
-      name: flutter_pcsc_linux
-      sha256: "5b806b8fffbd91ce74ddddca48e439fa522ca4bbafab85b2eb4cc7e30d179307"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
+      path: "../../flutter_pcsc_linux"
+      relative: true
+    source: path
+    version: "0.0.3"
   flutter_pcsc_macos:
     dependency: transitive
     description:
-      name: flutter_pcsc_macos
-      sha256: "6443c7c3e2e48e2731a806017e16838ce4e83857a1b81d000861f91119fee9d1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
+      path: "../../flutter_pcsc_macos"
+      relative: true
+    source: path
+    version: "0.0.3"
   flutter_pcsc_platform_interface:
     dependency: transitive
     description:
-      name: flutter_pcsc_platform_interface
-      sha256: "02c42341cc2622ad4bea292f925afb7e4b770639c08f0083ed4563c9967f67b7"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../flutter_pcsc_platform_interface"
+      relative: true
+    source: path
     version: "0.0.2"
   flutter_pcsc_windows:
     dependency: transitive
     description:
-      name: flutter_pcsc_windows
-      sha256: "71e2df26b7568f2929bbecedef6542da050f5560b76abf9e4599daf6d92969d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
+      path: "../../flutter_pcsc_windows"
+      relative: true
+    source: path
+    version: "0.0.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -264,5 +260,5 @@ packages:
     source: hosted
     version: "14.3.1"
 sdks:
-  dart: ">=3.7.0-0 <4.0.0"
+  dart: ">=3.7.0 <4.0.0"
   flutter: ">=3.18.0-18.0.pre.54"

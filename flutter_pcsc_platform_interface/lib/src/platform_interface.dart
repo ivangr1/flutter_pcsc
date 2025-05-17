@@ -39,7 +39,7 @@ abstract class PcscPlatform extends PlatformInterface {
     int hCard,
     int controlCode,
     List<int> sendBuffer, {
-    int maxResponseLength = 256,
+    bool newIsolate = false,
   }) {
     throw UnimplementedError('cardControl() has not been implemented.');
   }

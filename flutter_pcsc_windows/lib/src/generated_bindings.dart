@@ -321,6 +321,33 @@ class NativeLibraryWinscard {
       int Function(int, LPCSCARD_IO_REQUEST, LPCBYTE, int, LPSCARD_IO_REQUEST,
           LPBYTE, LPDWORD)>();
 
+  int SCardControl(
+    int hCard,
+    int dwControlCode,
+    LPCVOID lpInBuffer,
+    int cbInBufferSize,
+    LPVOID lpOutBuffer,
+    int cbOutBufferSize,
+    LPDWORD lpBytesReturned,
+  ) {
+    return _SCardControl(
+      hCard,
+      dwControlCode,
+      lpInBuffer,
+      cbInBufferSize,
+      lpOutBuffer,
+      cbOutBufferSize,
+      lpBytesReturned,
+    );
+  }
+
+  late final _SCardControlPtr = _lookup<
+      ffi.NativeFunction<
+          LONG Function(SCARDHANDLE, DWORD, LPCVOID, DWORD, LPVOID, DWORD,
+              LPDWORD)>>('SCardControl');
+  late final _SCardControl = _SCardControlPtr.asFunction<
+      int Function(int, int, LPCVOID, int, LPVOID, int, LPDWORD)>();
+
   /// /////////////////////////////////////////////////////////////////////////////
   int SCardGetAttrib(
     int hCard,

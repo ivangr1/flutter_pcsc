@@ -40,6 +40,24 @@ class PcscWindows extends PcscPlatform {
         newIsolate: newIsolate);
   }
 
+  /// Sends a control command directly to the reader.
+  /// 
+  /// This allows direct communication with the reader driver through 
+  /// the Windows SCardControl API.
+  /// 
+  /// Parameters:
+  /// - hCard: Handle to the connection returned from cardConnect
+  /// - controlCode: Control code for the operation to perform
+  /// - commandBytes: The command data to send to the reader
+  /// - newIsolate: Whether to run the operation in a new isolate (recommended for UI apps)
+  @override
+  Future<List<int>> cardControl(
+      int hCard, int controlCode, List<int> commandBytes,
+      {bool newIsolate = false}) {
+    return _binding.cardControl(hCard, controlCode, commandBytes,
+        newIsolate: newIsolate);
+  }
+
   /// Disconnects from the card.
   @override
   Future<void> cardDisconnect(int hCard, int disposition) {

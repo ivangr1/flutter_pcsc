@@ -224,6 +224,64 @@ class PCSCBinding {
     }
   }
 
+  Future<Uint8List> cardControl(
+      int hCard, int controlCode, List<int> commandBytes,
+      {bool newIsolate = false}) {
+    if (newIsolate) {
+      return _cardControlInNewIsolate(hCard, controlCode, commandBytes);
+    } else {
+      return _cardControlInSameIsolate(hCard, controlCode, commandBytes);
+    }
+  }
+
+  Future<Uint8List> _cardControlInNewIsolate(
+      int hCard, int controlCode, List<int> sendCommand) {
+    return compute(_computeFunctionCardControl, {
+      'h_card': hCard,
+      'control_code': controlCode,
+      'command': sendCommand
+    });
+  }
+
+  Future<Uint8List> _cardControlInSameIsolate(
+      int hCard, int controlCode, List<int> sendCommand) {
+    var nativeSendCommand = _allocateNative(sendCommand);
+
+    // Allocate buffer for response - using the same max buffer size as for transmit
+    var lpBytesReturned = calloc<DWORD>();
+    var pbRecvBuffer = calloc<ffi.Uint8>(PcscConstants.MAX_BUFFER_SIZE_EXTENDED);
+
+    try {
+      var res = _nlwinscard.SCardControl(
+          hCard,
+          controlCode,
+          nativeSendCommand.cast<ffi.Void>(),  // Cast to LPCVOID (Void*)
+          sendCommand.length,
+          pbRecvBuffer.cast<ffi.Void>(),       // Cast to LPVOID (Void*)
+          PcscConstants.MAX_BUFFER_SIZE_EXTENDED,
+          lpBytesReturned);
+      
+      _checkAndThrow(res, 'Error in SCardControl command');
+
+      Uint8List response = _asUint8List(pbRecvBuffer, lpBytesReturned.value);
+      return Future.value(response);
+    } finally {
+      calloc.free(nativeSendCommand);
+      calloc.free(lpBytesReturned);
+      calloc.free(pbRecvBuffer);
+    }
+  }
+
+  /*
+   * This computeFunction allows to run a blocking C function in an Isolate
+   */
+  static Future<Uint8List> _computeFunctionCardControl(Map map) async {
+    PCSCBinding binding = PCSCBinding();
+    return binding.cardControl(
+        map['h_card'], map['control_code'], map['command'],
+        newIsolate: false);
+  }
+
   Map _buildMapData(SCARD_READERSTATEA readerState) {
     Map pcscData = {};
     Uint8List atr = Uint8List(readerState.cbAtr);
