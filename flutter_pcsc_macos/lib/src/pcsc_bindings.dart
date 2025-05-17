@@ -107,29 +107,32 @@ class PCSCBinding {
   Future<Uint8List> cardControl(
     int hCard,
     int controlCode,
-    List<int> sendBuffer,
-    int recvBufferLen,
-  ) async {
-    final nativeSendBuffer = _allocateNative(sendBuffer);
-    final pbRecvBuffer = calloc<ffi.Uint8>(recvBufferLen);
+    List<int> sendBuffer, {
+    int maxResponseLength = 256,
+  }) {
+    var nativeSendBuffer = _allocateNative(sendBuffer);
+    var pcbRecvLength = calloc<DWORD>();
+    pcbRecvLength.value = maxResponseLength;
+    var pbRecvBuffer = calloc<ffi.Uint8>(pcbRecvLength.value);
     final lpBytesReturned = calloc<DWORD>();
 
     try {
       var res = _nlwinscard.SCardControl(
-        hCard,
-        controlCode,
-        nativeSendBuffer.cast(), // Cast to LPCVOID
-        sendBuffer.length,
-        pbRecvBuffer.cast(), // Cast to LPVOID
-        recvBufferLen,
-        lpBytesReturned,
-      );
-      _checkAndThrow(res, 'Error while sending SCardControl');
+          hCard,
+          controlCode,
+          nativeSendBuffer.cast(),
+          sendBuffer.length,
+          pbRecvBuffer.cast(),
+          pcbRecvLength.value,
+          lpBytesReturned);
 
-      final result = _asUint8List(pbRecvBuffer, lpBytesReturned.value);
-      return result;
+      _checkAndThrow(res, 'Error while sending control command to card');
+
+      Uint8List response = _asUint8List(pbRecvBuffer, lpBytesReturned.value);
+      return Future.value(response);
     } finally {
       calloc.free(nativeSendBuffer);
+      calloc.free(pcbRecvLength);
       calloc.free(pbRecvBuffer);
       calloc.free(lpBytesReturned);
     }

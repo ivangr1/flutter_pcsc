@@ -77,6 +77,8 @@ class _MyAppBodyState extends State<MyAppBody> {
     0x00,
     0x00
   ];
+  static const List<int> controlCommand = [0xE0, 0x00, 0x00, 0x28, 0x01, 0x05];
+  static const int IOCTL_SMARTCARD_VENDOR_IFD_EXCHANGE = 0x42000000 + 3400;
   final ScrollController _scrollController = ScrollController();
 
   final List<Message> _messages = [];
@@ -92,6 +94,8 @@ class _MyAppBodyState extends State<MyAppBody> {
       _messages.add(m);
     });
   }
+
+  int scardCtlCode(int x) => (0x31 << 16) | (x << 2);
 
   Future<void> getCardSerialNumber() async {
     int ctx = await PcscPlatform.instance
@@ -111,22 +115,29 @@ class _MyAppBodyState extends State<MyAppBody> {
         });
 
         card = await PcscPlatform.instance.cardConnect(ctx, reader,
-            PcscConstants.SCARD_SHARE_SHARED, PcscConstants.SCARD_PROTOCOL_ANY);
-        var response = await PcscPlatform.instance.transmit(card['h_card'],
-            card['active_protocol'], getCardSerialNumberCommand);
-        var sw = response.sublist(response.length - 2);
-        var sn = response.sublist(0, response.length - 2);
+            PcscConstants.SCARD_SHARE_DIRECT, PcscConstants.SCARD_PROTOCOL_ANY);
 
-        if (sw[0] != 0x90 || sw[1] != 0x00) {
+        // Send control command to the reader
+        setState(() {
+          _messages.add(Message.info('Sending control command to reader...'));
+        });
+
+        try {
+          var controlResponse = await PcscPlatform.instance.cardControl(
+            card['h_card'],
+            1107299756,
+            [0xE0, 0x00, 0x00, 0x21, 0x01, 0x6F],
+            maxResponseLength: 6,
+          );
+
           setState(() {
-            _messages
-                .add(Message.error('Card returned an error: ${hexDump(sw)}'));
+            _messages.add(Message.info(
+                'Control command response: ${hexDump(controlResponse)}'));
           });
-        } else {
+        } catch (e) {
+          print(e);
           setState(() {
-            _messages
-                .add(Message.info('Card Serial Number is: ${hexDump(sn)}'));
-            _messages.add(Message.info('Done'));
+            _messages.add(Message.error('Control command failed: $e'));
           });
         }
       }

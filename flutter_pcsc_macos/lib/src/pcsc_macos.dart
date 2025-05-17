@@ -41,7 +41,6 @@ class PcscMacOS extends PcscPlatform {
       hCard,
       controlCode,
       sendBuffer,
-      maxResponseLength,
     );
   }
 
