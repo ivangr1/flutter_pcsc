@@ -1,3 +1,4 @@
+import 'package:flutter_pcsc_platform_interface/flutter_pcsc_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// The interface that implementations of flutter_pcsc must implement.
@@ -69,6 +70,14 @@ abstract class PcscPlatform extends PlatformInterface {
 
   Future<void> waitForCardRemoved(int context, String readerName) {
     throw UnimplementedError('waitForCardPresent() has not been implemented.');
+  }
+
+  Future<Map> cardGetStatusChange(
+    int context,
+    String readerName, {
+    int currentState = PcscConstants.SCARD_STATE_UNAWARE,
+  }) {
+    throw UnimplementedError('cardGetStatusChange() has not been implemented.');
   }
 }
 

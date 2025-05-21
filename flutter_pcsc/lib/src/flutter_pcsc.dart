@@ -155,6 +155,22 @@ class Pcsc {
         return PcscConstants.SCARD_EJECT_CARD;
     }
   }
+
+  /// Gets the status change of a card in the specified reader.
+  ///
+  /// Returns a map containing information about the card status.
+  /// The map contains a 'pcsc_tag' key with information about the event state and ATR.
+  static Future<Map> cardGetStatusChange(
+    int context,
+    String readerName, {
+    PcscState currentState = PcscState.unaware,
+  }) {
+    return _platform.cardGetStatusChange(
+      context,
+      readerName,
+      currentState: stateToInt(currentState),
+    );
+  }
 }
 
 /// Represents a card.
@@ -187,6 +203,84 @@ enum PcscShare { exclusive, shared, direct }
 
 /// Represents the different disposition methods.
 enum PcscDisposition { leaveCard, resetCard, unpowerCard, ejectCard }
+
+/// Represents the different PCSC states.
+enum PcscState {
+  unaware,
+  ignore,
+  changed,
+  unknown,
+  unavailable,
+  empty,
+  present,
+  atrmatch,
+  exclusive,
+  inuse,
+  mute,
+  unpowered,
+}
+
+/// Converts a state to its corresponding identifier.
+int stateToInt(PcscState state) {
+  switch (state) {
+    case PcscState.unaware:
+      return PcscConstants.SCARD_STATE_UNAWARE;
+    case PcscState.ignore:
+      return PcscConstants.SCARD_STATE_IGNORE;
+    case PcscState.changed:
+      return PcscConstants.SCARD_STATE_CHANGED;
+    case PcscState.unknown:
+      return PcscConstants.SCARD_STATE_UNKNOWN;
+    case PcscState.unavailable:
+      return PcscConstants.SCARD_STATE_UNAVAILABLE;
+    case PcscState.empty:
+      return PcscConstants.SCARD_STATE_EMPTY;
+    case PcscState.present:
+      return PcscConstants.SCARD_STATE_PRESENT;
+    case PcscState.atrmatch:
+      return PcscConstants.SCARD_STATE_ATRMATCH;
+    case PcscState.exclusive:
+      return PcscConstants.SCARD_STATE_EXCLUSIVE;
+    case PcscState.inuse:
+      return PcscConstants.SCARD_STATE_INUSE;
+    case PcscState.mute:
+      return PcscConstants.SCARD_STATE_MUTE;
+    case PcscState.unpowered:
+      return PcscConstants.SCARD_STATE_UNPOWERED;
+  }
+}
+
+/// Converts a state identifier to its corresponding enum.
+PcscState intToState(int state) {
+  switch (state) {
+    case PcscConstants.SCARD_STATE_UNAWARE:
+      return PcscState.unaware;
+    case PcscConstants.SCARD_STATE_IGNORE:
+      return PcscState.ignore;
+    case PcscConstants.SCARD_STATE_CHANGED:
+      return PcscState.changed;
+    case PcscConstants.SCARD_STATE_UNKNOWN:
+      return PcscState.unknown;
+    case PcscConstants.SCARD_STATE_UNAVAILABLE:
+      return PcscState.unavailable;
+    case PcscConstants.SCARD_STATE_EMPTY:
+      return PcscState.empty;
+    case PcscConstants.SCARD_STATE_PRESENT:
+      return PcscState.present;
+    case PcscConstants.SCARD_STATE_ATRMATCH:
+      return PcscState.atrmatch;
+    case PcscConstants.SCARD_STATE_EXCLUSIVE:
+      return PcscState.exclusive;
+    case PcscConstants.SCARD_STATE_INUSE:
+      return PcscState.inuse;
+    case PcscConstants.SCARD_STATE_MUTE:
+      return PcscState.mute;
+    case PcscConstants.SCARD_STATE_UNPOWERED:
+      return PcscState.unpowered;
+    default:
+      return PcscState.unaware;
+  }
+}
 
 // issue 81421
 bool _manualDartRegistrationNeeded = true;

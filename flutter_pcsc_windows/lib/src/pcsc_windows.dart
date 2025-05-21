@@ -85,4 +85,15 @@ class PcscWindows extends PcscPlatform {
   Future<void> waitForCardRemoved(int context, String readerName) {
     return _binding.waitForCardRemoved(context, readerName);
   }
+
+  /// Gets the status change of a card in the specified reader.
+  @override
+  Future<Map> cardGetStatusChange(
+    int context,
+    String readerName, {
+    int currentState = PcscConstants.SCARD_STATE_UNAWARE,
+  }) {
+    return _binding.cardGetStatusChange(context, readerName,
+        currentState: currentState);
+  }
 }
