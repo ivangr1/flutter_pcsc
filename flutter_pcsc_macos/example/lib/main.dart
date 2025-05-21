@@ -127,7 +127,6 @@ class _MyAppBodyState extends State<MyAppBody> {
             card['h_card'],
             1107299756,
             [0xE0, 0x00, 0x00, 0x21, 0x01, 0x6F],
-            newIsolate: true,
           );
 
           setState(() {

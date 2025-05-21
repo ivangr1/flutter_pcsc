@@ -72,6 +72,20 @@ class PcscMacOS extends PcscPlatform {
     return _binding.releaseContext(context);
   }
 
+  /// Gets the status change of a card in the specified reader.
+  @override
+  Future<Map> cardGetStatusChange(
+    int context,
+    String readerName, {
+    int currentState = PcscConstants.SCARD_STATE_UNAWARE,
+  }) {
+    return _binding.cardGetStatusChange(
+      context,
+      readerName,
+      currentState: currentState,
+    );
+  }
+
   /// Waits for a card to be present on the specified reader.
   ///
   /// If a card is already present, it does not wait.

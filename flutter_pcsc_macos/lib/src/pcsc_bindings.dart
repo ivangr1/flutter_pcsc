@@ -268,10 +268,9 @@ class PCSCBinding {
     pcscData['atr'] = atr;
     pcscData['event_state'] = readerState.dwEventState;
 
-    Map data = {};
-    data['pcsc_tag'] = pcscData;
-
-    return data;
+    Map result = {};
+    result['pcsc_tag'] = pcscData;
+    return result;
   }
 
   List<String> _decodemstr(Int8List list) {
